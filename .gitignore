@@ -31,5 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
-.pom.xml
-.application.properties
+pom.xml
+application.properties
