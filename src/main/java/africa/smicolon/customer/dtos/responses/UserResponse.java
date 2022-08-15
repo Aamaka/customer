@@ -1,7 +1,13 @@
 package africa.smicolon.customer.dtos.responses;
 
 import africa.smicolon.customer.model.data.Message;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class AddUserResponse {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserResponse {
     private Message message;
 }
