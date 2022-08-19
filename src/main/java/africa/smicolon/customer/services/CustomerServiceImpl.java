@@ -67,15 +67,15 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public Invoice generateInvoice(Long customerId) throws NoCustomerFoundException {
-        Optional<Billing> billing = billingRepository.findByCustomerId(customerId);
-        if(billing.isPresent()){
-            Billing bill = billing.get();
+        List<Billing> billing = billingRepository.findAllBillingsByCustomerId(customerId);
+        if(!billing.isEmpty()){
+            Billing bill = billing.get(customerId.intValue());
             Optional<Customer> customer = customerRepository.findById(bill.getCustomer().getId());
             if(customer.isPresent()){
                 Invoice invoice = new Invoice();
                 invoice.setCustomerName(customer.get().getFirstName()+ " " + customer.get().getLastName());
                 invoice.setAccountNumber(bill.getAccountNumber());
-                invoice.setAccountToPay(bill.getTariff());
+                invoice.setAmountToPay(bill.getTariff());
                 return invoice;
             }else {
                 throw new NoCustomerFoundException("No Customer Found");
@@ -100,8 +100,7 @@ public class CustomerServiceImpl implements CustomerService{
             message.setEmail(customer.get().getEmail());
             message.setHomeAddress(customer.get().getHomeAddress());
             message.setGender(customer.get().getGender());
-
-            Optional<Billing> billing = billingRepository.findByCustomerId(customer.get().getId());
+            List <Billing> billing = billingRepository.findAllBillingsByCustomerId(customer.get().getId());
 
             return getUserResponse(message, response, billing);
         }else {
@@ -110,18 +109,11 @@ public class CustomerServiceImpl implements CustomerService{
 
     }
 
-    private UserResponse getUserResponse(Message message, UserResponse response, Optional<Billing> billing) throws NoCustomerFoundException {
-        if(billing.isPresent()){
-            Billing bill = billing.get();
-            bill.setTariff(bill.getTariff());
-            message.setBilling(bill);
+    private UserResponse getUserResponse(Message message, UserResponse response,  List <Billing> billing){
+            message.setBillings(billing);
             response.setMessage(message);
             return response;
         }
-        else {
-            throw new NoCustomerFoundException("Billing Not Found");
-        }
-    }
 
     @Override
     public List<Customer> findAllUser() {
@@ -129,25 +121,8 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
-    public UserResponse findACustomer(Long id) throws NoCustomerFoundException {
-        Optional<Customer> customer = customerRepository.findById(id);
-
-        if(customer.isPresent()){
-            Customer custom = customer.get();
-            UserResponse response = new UserResponse();
-            Message message = new Message();
-            message.setFirstName(custom.getFirstName());
-            message.setLastName(custom.getLastName());
-            message.setHomeAddress(custom.getHomeAddress());
-            message.setEmail(custom.getEmail());
-            message.setGender(custom.getGender());
-
-            Optional<Billing> billing = billingRepository.findByCustomerId(custom.getId());
-            return getUserResponse(message, response, billing);
-
-        }else {
-            throw new NoCustomerFoundException("Id does not exist");
-        }
+    public Customer findACustomer(Long id) throws NoCustomerFoundException {
+        return customerRepository.findById(id).orElseThrow(()-> new NoCustomerFoundException("Customer does not exist"));
 
     }
 }

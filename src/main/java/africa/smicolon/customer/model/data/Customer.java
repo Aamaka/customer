@@ -42,7 +42,7 @@ public class Customer {
     private String phoneNumber;
 
     @NonNull
-    @Column(name = "password", nullable = false, unique = true)
+    @Column(name = "password", nullable = false)
     private String password;
 
 

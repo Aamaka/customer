@@ -6,5 +6,5 @@ import lombok.Data;
 public class Invoice {
     private String customerName;
     private String accountNumber;
-    private String accountToPay;
+    private String amountToPay;
 }
