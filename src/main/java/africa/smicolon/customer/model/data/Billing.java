@@ -14,7 +14,7 @@ public class Billing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "accountNumber", nullable = false)
+    @Column(name = " accountNumber", nullable = false)
     private String accountNumber;
 
     @Column(name = "tariff", nullable = false)
